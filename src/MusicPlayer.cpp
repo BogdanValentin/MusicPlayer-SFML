@@ -65,8 +65,15 @@ void MusicPlayer::seekBackward() {
 }
 
 double MusicPlayer::getTime() {
-    double time = musicStream.getPlayingOffset().asSeconds();
-    int minutes = time / 60;
-    double seconds = time - (minutes * 60);
-    return minutes + seconds / 100;
+    return convertSecondsToTime(musicStream.getPlayingOffset().asSeconds());
+}
+
+double MusicPlayer::getDuration() {
+    return convertSecondsToTime(musicStream.getDuration().asSeconds());
+}
+
+double MusicPlayer::convertSecondsToTime(double seconds) {
+    int m = seconds / 60;
+    double s = seconds - (m * 60);
+    return m + s / 100;
 }
