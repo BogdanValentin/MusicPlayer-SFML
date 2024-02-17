@@ -6,6 +6,7 @@ void MusicPlayer::playSong(const std::string &filename) {
     }
 
     musicStream.play();
+    musicStream.setVolume(50);
 }
 
 void MusicPlayer::stopSong() {
@@ -18,4 +19,22 @@ void MusicPlayer::pauseSong() {
     } else {
         musicStream.play();
     }
+}
+
+void MusicPlayer::increaseVolume() {
+    if(musicStream.getVolume() <= 90) {
+        musicStream.setVolume(musicStream.getVolume() + 10);
+    }
+}
+
+void MusicPlayer::decreaseVolume() {
+    if(musicStream.getVolume() >= 10) {
+        musicStream.setVolume(musicStream.getVolume() - 10);
+    } else {
+        musicStream.setVolume(0);
+    }
+}
+
+void MusicPlayer::printVolume() {
+    std::cout << "Volume: " << musicStream.getVolume() << std::endl;
 }

@@ -30,6 +30,12 @@ int main(int argc, char *argv[]) {
         if(input == 's') {
             musicPlayer.stopSong();
         }
+        if(input == '+') {
+            musicPlayer.increaseVolume();
+        }
+        if(input == '-') {
+            musicPlayer.decreaseVolume();
+        }
     }
     
     return 0;
