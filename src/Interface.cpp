@@ -4,6 +4,7 @@ Interface::Interface(MusicPlayer *newMusicPlayer) : musicPlayer(newMusicPlayer) 
 
 void Interface::showPanel() {
     std::cout << "Now playing: " <<  musicPlayer->getSongTitle() << std::endl;
+    std::cout << "Time: " << std::fixed << std::setprecision(2) << musicPlayer->getTime() << std::endl;
 }
 
 void Interface::showMenu() {
@@ -13,5 +14,4 @@ void Interface::showMenu() {
     std::cout << "-: Decrease volume" << std::endl;
     std::cout << "q: Quit"       << std::endl;
     std::cout << std::endl;
-    std::cout << "Command: ";
 }

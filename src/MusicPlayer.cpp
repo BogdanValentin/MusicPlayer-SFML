@@ -44,3 +44,10 @@ void MusicPlayer::decreaseVolume() {
         musicStream.setVolume(0);
     }
 }
+
+double MusicPlayer::getTime() {
+    double time = musicStream.getPlayingOffset().asSeconds();
+    int minutes = time / 60;
+    double seconds = time - (minutes * 60);
+    return minutes + seconds / 100;
+}
