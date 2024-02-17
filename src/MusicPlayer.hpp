@@ -4,10 +4,11 @@
 #include <SFML/Audio.hpp>
 
 class MusicPlayer {
+    std::string songTitle;
     sf::Music musicStream;
 public:
-    void printVolume();
-
+    MusicPlayer(const std::string &filename);
+    std::string getSongTitle();
     void playSong(const std::string &filename);
     void stopSong();
     void pauseSong();

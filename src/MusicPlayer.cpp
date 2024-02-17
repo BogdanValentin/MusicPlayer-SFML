@@ -1,5 +1,15 @@
 #include "MusicPlayer.hpp"
 
+MusicPlayer::MusicPlayer(const std::string &filename) {
+    songTitle = filename;
+    int position = songTitle.find_last_of('/');
+    songTitle = songTitle.substr(position + 1);
+}
+
+std::string MusicPlayer::getSongTitle() {
+    return songTitle;
+}
+
 void MusicPlayer::playSong(const std::string &filename) {
     if(!musicStream.openFromFile(filename)) {
         exit(1);
@@ -30,11 +40,7 @@ void MusicPlayer::increaseVolume() {
 void MusicPlayer::decreaseVolume() {
     if(musicStream.getVolume() >= 10) {
         musicStream.setVolume(musicStream.getVolume() - 10);
-    } else {
+    } else { // because of a bug where from 20 it goes to 9.9998 insteam of 10
         musicStream.setVolume(0);
     }
-}
-
-void MusicPlayer::printVolume() {
-    std::cout << "Volume: " << musicStream.getVolume() << std::endl;
 }

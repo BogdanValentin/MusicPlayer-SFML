@@ -10,14 +10,17 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    MusicPlayer musicPlayer;
+    MusicPlayer musicPlayer(argv[1]);
     musicPlayer.playSong(argv[1]);
 
     while(true) {
         sf::sleep(sf::milliseconds(100)); // avoid 100% CPU usage
 
         std::cout << "\033[2J\033[1;1H";
-        Interface::showMenu();
+        Interface interface(&musicPlayer);
+        interface.showPanel();
+        std::cout << std::endl;
+        interface.showMenu();
         
         char input = getchar();
         if(input == 'q') {
