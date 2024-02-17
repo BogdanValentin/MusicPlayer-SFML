@@ -45,6 +45,25 @@ void MusicPlayer::decreaseVolume() {
     }
 }
 
+void MusicPlayer::seekForward() {
+    if(musicStream.getStatus() == sf::Music::Stopped) {
+        return;
+    }
+    if(musicStream.getPlayingOffset() + sf::seconds(5) < musicStream.getDuration()) {
+        musicStream.setPlayingOffset(musicStream.getPlayingOffset() + sf::seconds(5));
+    } else {
+        musicStream.stop();
+    }
+}
+
+void MusicPlayer::seekBackward() {
+    if(musicStream.getPlayingOffset() - sf::seconds(5) > sf::seconds(0)) {
+        musicStream.setPlayingOffset(musicStream.getPlayingOffset() - sf::seconds(5));
+    } else {
+        musicStream.setPlayingOffset(sf::seconds(0));
+    }
+}
+
 double MusicPlayer::getTime() {
     double time = musicStream.getPlayingOffset().asSeconds();
     int minutes = time / 60;

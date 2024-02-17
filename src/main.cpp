@@ -10,7 +10,7 @@
 void setNonCanonicalMode() {
     struct termios t;
     tcgetattr(STDIN_FILENO, &t);
-    t.c_lflag &= ~(ICANON | ECHO);  // Disable canonical mode and echo
+    t.c_lflag &= ~(ICANON | ECHO);
     tcsetattr(STDIN_FILENO, TCSANOW, &t);
 }
 
@@ -21,7 +21,6 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    // Set non-canonical mode for input
     setNonCanonicalMode();
 
     MusicPlayer musicPlayer(argv[1]);
@@ -35,7 +34,7 @@ int main(int argc, char *argv[]) {
                 musicPlayer.stopSong();
                 break;
             }
-            if (input == 'p') {
+            if (input == ' ') {
                 musicPlayer.pauseSong();
             }
             if (input == 's') {
@@ -47,24 +46,29 @@ int main(int argc, char *argv[]) {
             if (input == '-') {
                 musicPlayer.decreaseVolume();
             }
+            if (input == '.') {
+                musicPlayer.seekForward();
+            }
+            if (input == ',') {
+                musicPlayer.seekBackward();
+            }
+            
         }
         return input;
     });
 
     while (inputFuture.wait_for(std::chrono::milliseconds(1)) == std::future_status::timeout) {
-        // Update and display interface here
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
         std::cout << "\033[2J\033[1;1H";
         Interface interface(&musicPlayer);
         interface.showPanel();
         std::cout << std::endl;
         interface.showMenu();
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     musicPlayer.stopSong();  // Stop the song when 'q' is pressed
-    char userInput = inputFuture.get();  // Retrieve user input
-    // Handle user input if needed
+    char userInput = inputFuture.get();
 
     // Restore terminal settings
     struct termios t;

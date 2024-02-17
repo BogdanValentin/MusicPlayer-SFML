@@ -14,5 +14,7 @@ public:
     void pauseSong();
     void increaseVolume();
     void decreaseVolume();
+    void seekForward();
+    void seekBackward();
     double getTime();
 };
