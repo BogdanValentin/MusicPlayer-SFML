@@ -27,6 +27,7 @@ int main(int argc, char *argv[]) {
     setNonCanonicalMode();
 
     auto inputFuture = std::async(std::launch::async, [&musicPlayer]() {
+        
         char input;
         while (true) {
             input = getchar();
@@ -52,6 +53,15 @@ int main(int argc, char *argv[]) {
             if (input == ',') {
                 musicPlayer.seekBackward();
             }
+            if (input == 'n') {
+                musicPlayer.next();
+            }
+            if (input == 'b') {
+                musicPlayer.previous();
+            }
+            if (input == 'l') {
+                musicPlayer.setLoop(!musicPlayer.getLoop());
+            }
         }
         return input;
     });
@@ -64,10 +74,9 @@ int main(int argc, char *argv[]) {
         interface.showMenu();
 
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    }
 
-    musicPlayer.stop();  // Stop the song when 'q' is pressed
-    char userInput = inputFuture.get();
+        musicPlayer.checkAndSwitchToNextSong();
+    }
 
     // Restore terminal settings
     struct termios t;

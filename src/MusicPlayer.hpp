@@ -1,11 +1,13 @@
 #pragma once
 
-#include <queue>
+#include <list>
 
 #include "Song.hpp"
 
 class MusicPlayer {
-    std::queue<Song> songQueue;
+    std::list<Song> songList;
+    std::list<Song>::iterator currentSong;
+    bool loop = true;
 public:
     MusicPlayer(int argc, char *argv[]);
 
@@ -13,6 +15,7 @@ public:
     std::string getCurrentSongTitle();
     int getCurrentSongPlayingOffset();
     int getCurrentSongDuration();
+    bool getLoop();
 
     // controls
     void play();
@@ -22,4 +25,8 @@ public:
     void decreaseVolume();
     void seekForward();
     void seekBackward();
+    void next();
+    void previous();
+    void setLoop(bool newLoop);
+    void checkAndSwitchToNextSong();
 };

@@ -65,7 +65,7 @@ void Song::setPlayingOffset(int seconds) {
         seconds = 0;
     } else if(seconds > getDuration()) {
         seconds = 0;
-        musicStream->stop();
+        musicStream->play();
     }
     musicStream->setPlayingOffset(sf::seconds(seconds));
 }

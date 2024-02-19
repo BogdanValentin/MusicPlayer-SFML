@@ -13,6 +13,7 @@ void Interface::showPanel() {
     std::cout << "Time: " << std::fixed << std::setprecision(2) 
               << convertSecondsToTime(musicPlayer->getCurrentSongPlayingOffset()) << " out of "
               << convertSecondsToTime(musicPlayer->getCurrentSongDuration()) << std::endl;
+    std::cout << "Looping? " << std::boolalpha << musicPlayer->getLoop() << std::endl;
 }
 
 void Interface::showMenu() {
@@ -22,6 +23,9 @@ void Interface::showMenu() {
     std::cout << "-: Decrease volume" << std::endl;
     std::cout << ".: Seek forward  (5s)" << std::endl;
     std::cout << ",: Seek backward (5s)" << std::endl;
+    std::cout << "n: Next song" << std::endl;
+    std::cout << "b: Previous song" << std::endl;
+    std::cout << "l: Loop" << std::endl;
     std::cout << "q: Quit" << std::endl;
     std::cout << std::endl;
 }

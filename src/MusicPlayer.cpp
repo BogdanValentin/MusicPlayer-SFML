@@ -3,84 +3,116 @@
 MusicPlayer::MusicPlayer(int argc, char *argv[]) {
     for(int i = 1; i < argc; i++) {
         Song newSong(argv[i]);
-        songQueue.push(newSong);
+        songList.push_back(newSong);
     }
-
+    currentSong = songList.begin();
     play();
 }
 
 // info
 std::string MusicPlayer::getCurrentSongTitle() {
-    return songQueue.front().getTitle();
+    return currentSong->getTitle();
 }
 
 int MusicPlayer::getCurrentSongPlayingOffset() {
-    return songQueue.front().getPlayingOffset();
+    return currentSong->getPlayingOffset();
 }
 
 int MusicPlayer::getCurrentSongDuration() {
-    return songQueue.front().getDuration();
+    return currentSong->getDuration();
+}
+
+bool MusicPlayer::getLoop() {
+    return loop;
 }
 
 // controls
 void MusicPlayer::play() {
-    if(songQueue.empty()) {
+    if(songList.empty()) {
         return;
     }
 
-    songQueue.front().play();
-    songQueue.front().setVolume(50);
+    currentSong->play();
+    currentSong->setVolume(50);
 }
 
 void MusicPlayer::stop() {
-    if(songQueue.empty()) {
-        return;
-    }
-
-    songQueue.front().stop();
+    currentSong->stop();
 }
 
 void MusicPlayer::pause() {
-    if(songQueue.empty()) {
-        return;
-    }
-    if(songQueue.front().getStatus() == sf::Music::Playing) {
-        songQueue.front().pause();
+    if(currentSong->getStatus() == sf::Music::Playing) {
+        currentSong->pause();
     } else {
-        songQueue.front().unpause();
+        currentSong->unpause();
     }
 }
 
 void MusicPlayer::increaseVolume() {
-    if(songQueue.empty()) {
-        return;
-    }
-    if(songQueue.front().getVolume() <= 90) {
-        songQueue.front().setVolume(songQueue.front().getVolume() + 10);
+    if(currentSong->getVolume() <= 90) {
+        currentSong->setVolume(currentSong->getVolume() + 10);
     }
 }
 
 void MusicPlayer::decreaseVolume() {
-    if(songQueue.empty()) {
-        return;
-    }
-    if(songQueue.front().getVolume() >= 10) {
-        songQueue.front().setVolume(songQueue.front().getVolume() - 10);
+    if(currentSong->getVolume() >= 10) {
+        currentSong->setVolume(currentSong->getVolume() - 10);
     } else { // because of a bug where from 20 it goes to 9.9998 insteam of 10
-        songQueue.front().setVolume(0);
+        currentSong->setVolume(0);
     }
 }
 
 void MusicPlayer::seekForward() {
-    if(songQueue.empty()) {
-        return;
-    }
-    songQueue.front().setPlayingOffset(songQueue.front().getPlayingOffset() + 5);
+    currentSong->setPlayingOffset(currentSong->getPlayingOffset() + 5);
 }
 
 void MusicPlayer::seekBackward() {
-    if(songQueue.empty()) {
-        return;
+    currentSong->setPlayingOffset(currentSong->getPlayingOffset() - 5);
+}
+
+void MusicPlayer::next() {
+    currentSong->stop();
+    if(currentSong == std::prev(songList.end())) {
+        if(loop) {
+            currentSong = songList.begin();
+        } else {
+            return;
+        }
+    } else {
+        currentSong++;
     }
-    songQueue.front().setPlayingOffset(songQueue.front().getPlayingOffset() - 5);
+    play();
+}
+
+void MusicPlayer::previous() {
+    currentSong->stop();
+    if(currentSong == songList.begin()) {
+        if(loop) {
+            currentSong = std::prev(songList.end());
+        } else {
+            play();
+            return;
+        }
+    } else {
+        currentSong--;
+    }
+    play();
+}
+
+void MusicPlayer::setLoop(bool newLoop) {
+    loop = newLoop;
+}
+
+void MusicPlayer::checkAndSwitchToNextSong() {
+    if(currentSong->getStatus() == sf::Music::Stopped) {
+        if(currentSong == std::prev(songList.end())) {
+            if(loop) {
+                next();
+            } else {
+                return;
+            }
+        } else {
+            next();
+        }
+    }
 }
