@@ -1,25 +1,23 @@
 #pragma once
 
-#include <iostream>
-#include <SFML/Audio.hpp>
+#include <queue>
+
+#include "Song.hpp"
 
 class MusicPlayer {
-    std::string songTitle;
-    sf::Music musicStream;
-
-    double convertSecondsToTime(double seconds);
+    std::queue<Song> songQueue;
 public:
-    MusicPlayer(const std::string &filename);
+    MusicPlayer(int argc, char *argv[]);
 
     // info
-    std::string getSongTitle();
-    double getTime();
-    double getDuration();
+    std::string getCurrentSongTitle();
+    int getCurrentSongPlayingOffset();
+    int getCurrentSongDuration();
 
     // controls
-    void playSong(const std::string &filename);
-    void stopSong();
-    void pauseSong();
+    void play();
+    void stop();
+    void pause();
     void increaseVolume();
     void decreaseVolume();
     void seekForward();

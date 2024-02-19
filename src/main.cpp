@@ -15,30 +15,30 @@ void setNonCanonicalMode() {
 }
 
 int main(int argc, char *argv[]) {
-    if (argc != 2) {
+    if (argc < 2) {
         std::cout << "Error: " << "Invalid number of arguments" << std::endl;
         std::cout << "Usage: " << "MusicPlayer " << "<filename>" << std::endl;
         return 1;
     }
 
-    setNonCanonicalMode();
+    MusicPlayer musicPlayer(argc, argv);
 
-    MusicPlayer musicPlayer(argv[1]);
-    musicPlayer.playSong(argv[1]);
+
+    setNonCanonicalMode();
 
     auto inputFuture = std::async(std::launch::async, [&musicPlayer]() {
         char input;
         while (true) {
             input = getchar();
             if (input == 'q') {
-                musicPlayer.stopSong();
+                musicPlayer.stop();
                 break;
             }
             if (input == ' ') {
-                musicPlayer.pauseSong();
+                musicPlayer.pause();
             }
             if (input == 's') {
-                musicPlayer.stopSong();
+                musicPlayer.stop();
             }
             if (input == '+') {
                 musicPlayer.increaseVolume();
@@ -52,7 +52,6 @@ int main(int argc, char *argv[]) {
             if (input == ',') {
                 musicPlayer.seekBackward();
             }
-            
         }
         return input;
     });
@@ -67,7 +66,7 @@ int main(int argc, char *argv[]) {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
-    musicPlayer.stopSong();  // Stop the song when 'q' is pressed
+    musicPlayer.stop();  // Stop the song when 'q' is pressed
     char userInput = inputFuture.get();
 
     // Restore terminal settings

@@ -1,79 +1,86 @@
 #include "MusicPlayer.hpp"
 
-MusicPlayer::MusicPlayer(const std::string &filename) {
-    songTitle = filename;
-    int position = songTitle.find_last_of('/');
-    songTitle = songTitle.substr(position + 1);
-}
-
-std::string MusicPlayer::getSongTitle() {
-    return songTitle;
-}
-
-void MusicPlayer::playSong(const std::string &filename) {
-    if(!musicStream.openFromFile(filename)) {
-        exit(1);
+MusicPlayer::MusicPlayer(int argc, char *argv[]) {
+    for(int i = 1; i < argc; i++) {
+        Song newSong(argv[i]);
+        songQueue.push(newSong);
     }
 
-    musicStream.play();
-    musicStream.setVolume(50);
+    play();
 }
 
-void MusicPlayer::stopSong() {
-    musicStream.stop();
+// info
+std::string MusicPlayer::getCurrentSongTitle() {
+    return songQueue.front().getTitle();
 }
 
-void MusicPlayer::pauseSong() {
-    if(musicStream.getStatus() == sf::Music::Playing) {
-        musicStream.pause();
+int MusicPlayer::getCurrentSongPlayingOffset() {
+    return songQueue.front().getPlayingOffset();
+}
+
+int MusicPlayer::getCurrentSongDuration() {
+    return songQueue.front().getDuration();
+}
+
+// controls
+void MusicPlayer::play() {
+    if(songQueue.empty()) {
+        return;
+    }
+
+    songQueue.front().play();
+    songQueue.front().setVolume(50);
+}
+
+void MusicPlayer::stop() {
+    if(songQueue.empty()) {
+        return;
+    }
+
+    songQueue.front().stop();
+}
+
+void MusicPlayer::pause() {
+    if(songQueue.empty()) {
+        return;
+    }
+    if(songQueue.front().getStatus() == sf::Music::Playing) {
+        songQueue.front().pause();
     } else {
-        musicStream.play();
+        songQueue.front().unpause();
     }
 }
 
 void MusicPlayer::increaseVolume() {
-    if(musicStream.getVolume() <= 90) {
-        musicStream.setVolume(musicStream.getVolume() + 10);
+    if(songQueue.empty()) {
+        return;
+    }
+    if(songQueue.front().getVolume() <= 90) {
+        songQueue.front().setVolume(songQueue.front().getVolume() + 10);
     }
 }
 
 void MusicPlayer::decreaseVolume() {
-    if(musicStream.getVolume() >= 10) {
-        musicStream.setVolume(musicStream.getVolume() - 10);
+    if(songQueue.empty()) {
+        return;
+    }
+    if(songQueue.front().getVolume() >= 10) {
+        songQueue.front().setVolume(songQueue.front().getVolume() - 10);
     } else { // because of a bug where from 20 it goes to 9.9998 insteam of 10
-        musicStream.setVolume(0);
+        songQueue.front().setVolume(0);
     }
 }
 
 void MusicPlayer::seekForward() {
-    if(musicStream.getStatus() == sf::Music::Stopped) {
+    if(songQueue.empty()) {
         return;
     }
-    if(musicStream.getPlayingOffset() + sf::seconds(5) < musicStream.getDuration()) {
-        musicStream.setPlayingOffset(musicStream.getPlayingOffset() + sf::seconds(5));
-    } else {
-        musicStream.stop();
-    }
+    songQueue.front().setPlayingOffset(songQueue.front().getPlayingOffset() + 5);
 }
 
 void MusicPlayer::seekBackward() {
-    if(musicStream.getPlayingOffset() - sf::seconds(5) > sf::seconds(0)) {
-        musicStream.setPlayingOffset(musicStream.getPlayingOffset() - sf::seconds(5));
-    } else {
-        musicStream.setPlayingOffset(sf::seconds(0));
+    if(songQueue.empty()) {
+        return;
     }
-}
-
-double MusicPlayer::getTime() {
-    return convertSecondsToTime(musicStream.getPlayingOffset().asSeconds());
-}
-
-double MusicPlayer::getDuration() {
-    return convertSecondsToTime(musicStream.getDuration().asSeconds());
-}
-
-double MusicPlayer::convertSecondsToTime(double seconds) {
-    int m = seconds / 60;
-    double s = seconds - (m * 60);
-    return m + s / 100;
+    songQueue.front().setPlayingOffset(songQueue.front().getPlayingOffset() - 5);
 }

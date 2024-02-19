@@ -2,10 +2,17 @@
 
 Interface::Interface(MusicPlayer *newMusicPlayer) : musicPlayer(newMusicPlayer) {}
 
+double Interface::convertSecondsToTime(double seconds) {
+    int m = seconds / 60;
+    double s = (seconds - (m * 60)) / 100;
+    return m + s;
+}
+
 void Interface::showPanel() {
-    std::cout << "Now playing: " <<  musicPlayer->getSongTitle() << std::endl;
+    std::cout << "Now playing: " <<  musicPlayer->getCurrentSongTitle() << std::endl;
     std::cout << "Time: " << std::fixed << std::setprecision(2) 
-    << musicPlayer->getTime() << " out of " << musicPlayer->getDuration() << std::endl;
+              << convertSecondsToTime(musicPlayer->getCurrentSongPlayingOffset()) << " out of "
+              << convertSecondsToTime(musicPlayer->getCurrentSongDuration()) << std::endl;
 }
 
 void Interface::showMenu() {
