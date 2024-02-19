@@ -25,7 +25,7 @@ void Interface::showMenu() {
     std::cout << ",: Seek backward (5s)" << std::endl;
     std::cout << "n: Next song" << std::endl;
     std::cout << "b: Previous song" << std::endl;
-    std::cout << "l: Loop" << std::endl;
+    std::cout << "l: Toggle loop" << std::endl;
     std::cout << "q: Quit" << std::endl;
     std::cout << std::endl;
 }
